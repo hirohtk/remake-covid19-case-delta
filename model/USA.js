@@ -5,6 +5,10 @@ var Schema = mongoose.Schema;
 
 var USASchema = new Schema({
 
+    city: {
+        type: String,
+    },
+
     province: {
         type: String,
         required: true,
@@ -19,6 +23,11 @@ var USASchema = new Schema({
         type: String,
         required: true,
     }],
+
+    keyId: {
+        type: String,
+        required: true,
+    },
 
     confirmed: [{
         type: String,

@@ -6,10 +6,9 @@ var schedule = require('node-schedule');
 
 const axios = require("axios");
 
-// this would really only need to be run once during deployment
+// this would really only need to be run once during deployment- that's why I made the conditional 
 router.get("/seed", function (req, res) {
   db.USA.find({}).then((response) => {
-    console.log(`here's your generic find response ${response}`);
     if (response.length > 0) {
       //do nothing
       console.log(`data is aleady here`);
@@ -18,6 +17,9 @@ router.get("/seed", function (req, res) {
       axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=USA").then((response) => {
         console.log("axios fired");
         let data = response.data.data.covid19Stats
+
+        // 3/24/2020:  API ADDED COUNTY TO US, BUT THEY NAME IT "CITY".  RENAMED MODEL ACCORDINGLY
+        console.log(data.slice(0, 5));
         db.USA.create(data).then((response) => {
           res.json(response);
         })
@@ -33,7 +35,7 @@ router.get("/update", function (req, res) {
     let data = response.data.data.covid19Stats
 
     for (let i = 0; i < data.length; i++) {
-      db.USA.findOne({province: data[i].province}).then((response) => {
+      db.USA.findOne({ province: data[i].province }).then((response) => {
         if (response.lastUpdate[response.lastUpdate.length - 1] === data[i].lastUpdate) {
           // skip updating
           console.log(`No new data.  Skipping update for ${data[i].province}`);
