@@ -14,7 +14,7 @@ router.get("/seed", function (req, res) {
       console.log(`data is aleady here`);
     }
     else {
-      axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=USA").then((response) => {
+      axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=Canada").then((response) => {
         console.log("axios fired");
         let data = response.data.data.covid19Stats
 
@@ -30,7 +30,7 @@ router.get("/seed", function (req, res) {
 
 // update hourly, etc
 router.get("/update", function (req, res) {
-  axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=USA").then((response) => {
+  axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=Canada").then((response) => {
 
     let data = response.data.data.covid19Stats
 
@@ -62,7 +62,7 @@ let updater = () => {
     .expect(200)
     .end(function (err, res) {
       if (err) throw err;
-      console.log(`test done`)
+      console.log(`response is ${res}`)
     });
 }
 
