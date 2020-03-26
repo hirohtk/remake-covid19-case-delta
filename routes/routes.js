@@ -67,7 +67,7 @@ let updater = () => {
 }
 
 // runs updater at the top of every hour
-var j = schedule.scheduleJob('0 * * * *', function () {
+var j = schedule.scheduleJob('0 * * * * *', function () {
   updater();
 });
 
