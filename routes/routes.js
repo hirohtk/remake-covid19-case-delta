@@ -1,8 +1,8 @@
 const path = require("path");
 const router = require("express").Router();
 const db = require("../model/index");
-const request = require('supertest');
-var schedule = require('node-schedule');
+// const request = require('supertest');
+// var schedule = require('node-schedule');
 
 const axios = require("axios");
 
@@ -14,7 +14,7 @@ router.get("/seed", function (req, res) {
       console.log(`data is aleady here`);
     }
     else {
-      axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=Canada").then((response) => {
+      axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=US").then((response) => {
         console.log("axios fired");
         let data = response.data.data.covid19Stats
 
@@ -30,12 +30,13 @@ router.get("/seed", function (req, res) {
 
 // update hourly, etc
 router.get("/update", function (req, res) {
-  axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=Canada").then((response) => {
+  axios.get("https://covid19-api.weedmark.systems/api/v1/stats?country=US").then((response) => {
 
     let data = response.data.data.covid19Stats
-
+    console.log(`*** UPDATE ROUTE HIT ***`)
     for (let i = 0; i < data.length; i++) {
       db.USA.findOne({ keyId: data[i].keyId }).then((response) => {
+        console.log(`response.lastUpdate.length is ${response.lastUpdate.length}`)
         if (response.lastUpdate[response.lastUpdate.length - 1] === data[i].lastUpdate) {
           // skip updating
           console.log(`No new data.  Skipping update for ${data[i].keyId}`);
@@ -55,21 +56,21 @@ router.get("/update", function (req, res) {
   });
 })
 
-let updater = () => {
-  request(router)
-    .get('/update')
-    .expect('Content-Type', /json/)
-    .expect(200)
-    .end(function (err, res) {
-      if (err) throw err;
-      console.log(`response is ${res}`)
-    });
-}
+// let updater = () => {
+//   request(router)
+//     .get('/update')
+//     .expect('Content-Type', /json/)
+//     .expect(200)
+//     .end(function (err, res) {
+//       if (err) throw err;
+//       console.log(`response is ${res}`)
+//     });
+// }
 
-// runs updater at the top of every hour
-var j = schedule.scheduleJob('0 * * * * *', function () {
-  updater();
-});
+// // runs updater at the top of every hour
+// var j = schedule.scheduleJob('0 * * * * *', function () {
+//   updater();
+// });
 
 // If no API routes are hit, send the React app
 

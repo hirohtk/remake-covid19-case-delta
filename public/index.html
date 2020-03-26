@@ -17,27 +17,35 @@
   <button id="seed">Submit
   </button>
   <script type="text/javascript">
+    $( document ).ready(function() {
     $("#seed").on("click", function () {
-      event.preventDefault();
-
-      console.log("seeding");
-
-      $.get("/seed", function (response, err) {
-        if (response) {
-          console.log(response);
-        }
-        else if (err) {
-          throw (err);
-        }
-      });
-
+        event.preventDefault();
+    
+        console.log("seeding");
+    
+        $.get("/seed", function (response, err) {
+            if (response) {
+                console.log(response);
+            }
+            else if (err) {
+                throw (err);
+            }
+        });
+    
     })
 
-    $("#root").on("click", function () {
-
-      console.log("test");
-
-    })
+    setInterval(() => {
+        $.get("/update", function (response, err) {
+            if (response) {
+                console.log(response);
+            }
+            else if (err) {
+                throw (err);
+            }
+        });
+        console.log(`Pulling Data`);
+    }, 1000 * 60 * 60);
+});
   </script>
 </body>
 
